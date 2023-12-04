@@ -7,7 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CanvasPanel extends JPanel {
+
     private Viewpoint viewpoint;
+    private CoordinateSystem coordinateSystem;
 
     public CanvasPanel() {
         // 初始化画布，设置视点等
