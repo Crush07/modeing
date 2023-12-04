@@ -13,7 +13,6 @@ public class CanvasPanel extends JPanel {
 
     public CanvasPanel() {
         // 初始化画布，设置视点等
-        this.viewpoint = new Viewpoint(new CoordinateSystem(0, 0, 0));
     }
 
     public void setViewpoint(Viewpoint viewpoint) {
