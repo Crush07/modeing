@@ -60,4 +60,24 @@ public class Calculator {
         return line;
     }
 
+    /**
+     * 求存在点且与方向向量垂直的面
+     * @param normalVector 法向量
+     * @param point 点
+     * @return 平面
+     */
+    Face getFaceByNormalVectorAndPoint(Vector normalVector, Point point){
+
+        Face face = new Face();
+        Face.CommonEquation commonEquation = face.getCommonEquation();
+        commonEquation.setA(normalVector.getX());
+        commonEquation.setB(normalVector.getY());
+        commonEquation.setC(normalVector.getZ());
+        commonEquation.setD(normalVector.getX() * point.getX()
+                + normalVector.getY() * point.getY()
+                + normalVector.getZ() * point.getZ());
+
+        return face;
+    }
+
 }

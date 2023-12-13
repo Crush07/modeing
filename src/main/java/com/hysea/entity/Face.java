@@ -2,6 +2,9 @@ package com.hysea.entity;
 
 public class Face {
 
+    public Face() {
+    }
+
     public Face(Line[] lines) {
         this.lines = lines;
     }
