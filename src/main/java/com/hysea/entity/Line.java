@@ -1,5 +1,7 @@
 package com.hysea.entity;
 
+import com.hysea.core.Fraction;
+
 public class Line {
 
     public Line() {
@@ -21,64 +23,76 @@ public class Line {
      */
     public static class ParametricEquation {
 
-        private double m;
+        private Fraction m;
 
-        private double n;
+        private Fraction n;
 
-        private double p;
+        private Fraction p;
 
-        private double x0;
+        private Fraction x0;
 
-        private double y0;
+        private Fraction y0;
 
-        private double z0;
+        private Fraction z0;
 
-        public double getM() {
+        public Fraction getM() {
             return m;
         }
 
-        public void setM(double m) {
+        public void setM(Fraction m) {
             this.m = m;
         }
 
-        public double getN() {
+        public Fraction getN() {
             return n;
         }
 
-        public void setN(double n) {
+        public void setN(Fraction n) {
             this.n = n;
         }
 
-        public double getP() {
+        public Fraction getP() {
             return p;
         }
 
-        public void setP(double p) {
+        public void setP(Fraction p) {
             this.p = p;
         }
 
-        public double getX0() {
+        public Fraction getX0() {
             return x0;
         }
 
-        public void setX0(double x0) {
+        public void setX0(Fraction x0) {
             this.x0 = x0;
         }
 
-        public double getY0() {
+        public Fraction getY0() {
             return y0;
         }
 
-        public void setY0(double y0) {
+        public void setY0(Fraction y0) {
             this.y0 = y0;
         }
 
-        public double getZ0() {
+        public Fraction getZ0() {
             return z0;
         }
 
-        public void setZ0(double z0) {
+        public void setZ0(Fraction z0) {
             this.z0 = z0;
+        }
+
+        @Override
+        public String toString() {
+            return "ParametricEquation{" +
+                    "m=" + m +
+                    ", n=" + n +
+                    ", p=" + p +
+                    ", x0=" + x0 +
+                    ", y0=" + y0 +
+                    ", z0=" + z0 +
+                    '}';
         }
     }
 
@@ -96,5 +110,12 @@ public class Line {
 
     public void setParametricEquation(ParametricEquation parametricEquation) {
         this.parametricEquation = parametricEquation;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "parametricEquation=" + parametricEquation +
+                '}';
     }
 }

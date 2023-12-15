@@ -1,5 +1,7 @@
 package com.hysea.entity;
 
+import com.hysea.core.Fraction;
+
 public class Face {
 
     public Face() {
@@ -19,43 +21,43 @@ public class Face {
      */
     public static class CommonEquation{
 
-        private double A;
+        private Fraction A;
 
-        private double B;
+        private Fraction B;
 
-        private double C;
+        private Fraction C;
 
-        private double D;
+        private Fraction D;
 
-        public double getA() {
+        public Fraction getA() {
             return A;
         }
 
-        public void setA(double a) {
+        public void setA(Fraction a) {
             A = a;
         }
 
-        public double getB() {
+        public Fraction getB() {
             return B;
         }
 
-        public void setB(double b) {
+        public void setB(Fraction b) {
             B = b;
         }
 
-        public double getC() {
+        public Fraction getC() {
             return C;
         }
 
-        public void setC(double c) {
+        public void setC(Fraction c) {
             C = c;
         }
 
-        public double getD() {
+        public Fraction getD() {
             return D;
         }
 
-        public void setD(double d) {
+        public void setD(Fraction d) {
             D = d;
         }
     }

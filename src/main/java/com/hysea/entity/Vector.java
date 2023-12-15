@@ -1,40 +1,87 @@
 package com.hysea.entity;
 
+import com.hysea.core.Fraction;
+
 public class Vector {
 
-    private double x;
+    private Fraction x;
 
-    private double y;
+    private Fraction y;
 
-    private double z;
+    private Fraction z;
 
-    public Vector(double x, double y, double z) {
+    public Vector(Fraction x, Fraction y, Fraction z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public double getX() {
+
+    public Vector(double x, double y, double z) {
+        this.x = new Fraction(x);
+        this.y = new Fraction(y);
+        this.z = new Fraction(z);
+    }
+
+    public Fraction getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(Fraction x) {
         this.x = x;
     }
 
-    public double getY() {
+    public Fraction getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(Fraction y) {
         this.y = y;
     }
 
-    public double getZ() {
+    public Fraction getZ() {
         return z;
     }
 
-    public void setZ(double z) {
+    public void setZ(Fraction z) {
         this.z = z;
+    }
+
+    /**
+     * 向量相加
+     * @param vector 被加向量
+     * @return
+     */
+    public Vector add(Vector vector){
+        return new Vector(this.getX().add(vector.getX()),
+                this.getY().add(vector.getY()),
+                this.getZ().add(vector.getZ()));
+    }
+
+    /**
+     * 向量的长度
+     * @return
+     */
+    public Fraction getSize(){
+        return new Fraction(Math.sqrt(this.getX().multiply(this.getX())
+                .add(this.getY().multiply(this.getY()))
+                .add(this.getZ().multiply(this.getZ())).getValue()));
+    }
+
+    public void setSize(Fraction size){
+        System.out.println(getSize());
+        Fraction scale = size.divide(getSize());
+        this.setX(this.getX().multiply(scale));
+        this.setY(this.getY().multiply(scale));
+        this.setZ(this.getZ().multiply(scale));
+    }
+
+    @Override
+    public String toString() {
+        return "Vector{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }
