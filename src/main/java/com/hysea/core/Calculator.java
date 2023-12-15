@@ -1,9 +1,6 @@
 package com.hysea.core;
 
-import com.hysea.entity.Face;
-import com.hysea.entity.Line;
-import com.hysea.entity.Point;
-import com.hysea.entity.Vector;
+import com.hysea.entity.*;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public class Calculator {
      * @param face 面
      * @return 交汇点
      */
-    Point getPointByParametricEquationOfLineAndCommonEquationOfFace(Line line, Face face) {
+    public static Point getPointByParametricEquationOfLineAndCommonEquationOfFace(Line line, Face face) {
 
         //TODO 判断线是否在面内，抛出无穷解异常
 
@@ -24,18 +21,22 @@ public class Calculator {
         Line.ParametricEquation parametricEquation = line.getParametricEquation();
         Face.CommonEquation commonEquation = face.getCommonEquation();
 
-        double t = -1 * (
-                commonEquation.getA() * parametricEquation.getX0()
-                        + commonEquation.getB() * parametricEquation.getY0()
-                        + commonEquation.getC() * parametricEquation.getZ0()
-                        + commonEquation.getD()
-                ) / (commonEquation.getA() * parametricEquation.getM()
-                + commonEquation.getB() * parametricEquation.getN()
-                + commonEquation.getC() * parametricEquation.getP());
+        Fraction t = new Fraction(-1).multiply(
+                commonEquation.getA().multiply(parametricEquation.getX0())
+                        .add(commonEquation.getB().multiply(parametricEquation.getY0()))
+                        .add(commonEquation.getC().multiply(parametricEquation.getZ0()))
+                        .add(commonEquation.getD())
+        ).divide(
+                commonEquation.getA().multiply(parametricEquation.getM())
+                        .add(commonEquation.getB().multiply(parametricEquation.getN()))
+                        .add(commonEquation.getC().multiply(parametricEquation.getP()))
+        );
 
-        Point point = new Point(parametricEquation.getM() * t + parametricEquation.getX0(),
-                parametricEquation.getN() * t + parametricEquation.getY0(),
-                parametricEquation.getP() * t + parametricEquation.getZ0());
+        Point point = new Point(
+                parametricEquation.getM().multiply(t).add(parametricEquation.getX0()),
+                parametricEquation.getN().multiply(t).add(parametricEquation.getY0()),
+                parametricEquation.getP().multiply(t).add(parametricEquation.getZ0())
+        );
 
         return point;
     }
@@ -46,7 +47,7 @@ public class Calculator {
      * @param point 点
      * @return 直线
      */
-    Line getLineByVectorAndPoint(Vector vector, Point point){
+    public static Line getLineByVectorAndPoint(Vector vector, Point point){
         Line line = new Line();
         line.setParametricEquation(new Line.ParametricEquation());
         Line.ParametricEquation parametricEquation = line.getParametricEquation();
@@ -66,18 +67,143 @@ public class Calculator {
      * @param point 点
      * @return 平面
      */
-    Face getFaceByNormalVectorAndPoint(Vector normalVector, Point point){
+    public static Face getFaceByNormalVectorAndPoint(Vector normalVector, Point point){
 
         Face face = new Face();
+        face.setCommonEquation(new Face.CommonEquation());
         Face.CommonEquation commonEquation = face.getCommonEquation();
         commonEquation.setA(normalVector.getX());
         commonEquation.setB(normalVector.getY());
         commonEquation.setC(normalVector.getZ());
-        commonEquation.setD(normalVector.getX() * point.getX()
-                + normalVector.getY() * point.getY()
-                + normalVector.getZ() * point.getZ());
+        commonEquation.setD(normalVector.getX().multiply(point.getX())
+                .add(normalVector.getY().multiply(point.getY()))
+                .add(normalVector.getZ().multiply(point.getZ())));
 
         return face;
+    }
+
+    /**
+     * 已知2个向量v1，v2，一个起点a，一个终点d，d - a为向量v3，a*v1 + b*v2 = v3，求a，b
+     * @param vectorX
+     * @param vectorY
+     * @param point
+     * @param orignPoint
+     * @return
+     */
+    public static Point getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(Vector vectorX, Vector vectorY, Point point, Point orignPoint){
+
+        Vector v3 = new Vector(
+                orignPoint.getX().subtract(point.getX()),
+                orignPoint.getY().subtract(point.getY()),
+                orignPoint.getZ().subtract(point.getZ())
+        );
+
+        double a,b;
+//        a * vectorX.getX() + b * vectorY.getX() = v3.getX();
+//        a * vectorX.getY() + b * vectorY.getY() = v3.getY();
+//        a * vectorX.getZ() + b * vectorY.getZ() = v3.getZ();
+        //求a,b
+        double[][] coefficients = {
+                {vectorX.getX().getValue(), vectorY.getX().getValue()},
+                {vectorX.getY().getValue(), vectorY.getY().getValue()},
+                {vectorX.getZ().getValue(), vectorY.getZ().getValue()}
+        };
+
+        double[] constants = {v3.getX().getValue(), v3.getY().getValue(), v3.getZ().getValue()};
+
+        double[] solutions = solveSystem(coefficients, constants);
+        a = solutions[0];
+        b = solutions[1];
+        Point res = new Point(a,b,0);
+        res.setDimensionType(DimensionType.D2);
+
+        return res;
+    }
+
+    /**
+     * 使用高斯消元法等方法求解线性方程组
+     * 省略具体实现，可以使用第三方库或手动实现
+     * 返回一个包含解的数组
+     * https://blog.csdn.net/lzyws739307453/article/details/89816311 可参考
+     * @param coefficients
+     * @param constants
+     * @return
+     */
+    private static double[] solveSystem(double[][] coefficients, double[] constants) {
+
+        double[] solution = new double[2];
+
+        //构建增广矩阵
+        double[][] augmentedMatrix = new double[2][3];
+        for (int i = 0; i < coefficients.length - 1; i++) {
+            for (int j = 0; j < coefficients[i].length; j++) {
+                augmentedMatrix[i][j] = coefficients[i][j];
+            }
+            augmentedMatrix[i][coefficients[i].length] = constants[i];
+        }
+        //转换为简化行阶梯式
+        double[][] simple = reduceToRowEchelonForm(augmentedMatrix);
+
+        //向后替换算法
+        solution[1] = simple[1][2] / simple[1][1];
+        solution[0] = (simple[0][2] - simple[0][1] * solution[1]) / simple[0][0];
+
+        return solution;
+    }
+
+    /**
+     * 增广矩阵转换为简化行阶梯形式
+     * @param augmentedMatrix 增广矩阵
+     * @return 简化行阶梯形式
+     */
+    public static double[][] reduceToRowEchelonForm(double[][] augmentedMatrix) {
+        int rowCount = augmentedMatrix.length;
+        int colCount = augmentedMatrix[0].length;
+
+        int lead = 0; // 主导列
+
+        for (int r = 0; r < rowCount; r++) {
+            if (lead >= colCount) {
+                break;
+            }
+
+            int i = r;
+            while (augmentedMatrix[i][lead] == 0) {
+                i++;
+                if (i == rowCount) {
+                    i = r;
+                    lead++;
+                    if (colCount == lead) {
+                        break;
+                    }
+                }
+            }
+
+            // 交换行
+            double[] temp = augmentedMatrix[i];
+            augmentedMatrix[i] = augmentedMatrix[r];
+            augmentedMatrix[r] = temp;
+
+            // 将主导列的元素变为1
+            double lv = augmentedMatrix[r][lead];
+            for (int j = 0; j < colCount; j++) {
+                augmentedMatrix[r][j] /= lv;
+            }
+
+            // 消元操作，将其他行的主导列元素变为0
+            for (int k = 0; k < rowCount; k++) {
+                if (k != r) {
+                    double factor = augmentedMatrix[k][lead];
+                    for (int j = 0; j < colCount; j++) {
+                        augmentedMatrix[k][j] -= factor * augmentedMatrix[r][j];
+                    }
+                }
+            }
+
+            lead++;
+        }
+
+        return augmentedMatrix;
     }
 
 }
