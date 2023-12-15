@@ -35,7 +35,17 @@ public class Viewpoint {
         this.vectorX = new Vector(1,0,0);
 
         //视平面y向量，y轴正方向
-        this.vectorX = new Vector(0,1,0);
+        this.vectorY = new Vector(0,1,0);
+
+
+//        //视线向量从视点指向空间坐标系原点
+//        this.vector = new Vector(0,-0.5,-1);
+//
+//        //视平面x向量，x轴正方向
+//        this.vectorX = new Vector(1,0,0);
+//
+//        //视平面y向量，y轴正方向
+//        this.vectorY = new Vector(0,1,0.5);
 
     }
 
