@@ -2,14 +2,24 @@ package com.hysea.entity;
 
 import com.hysea.core.Fraction;
 
+import java.awt.*;
+
 public class Line {
 
     public Line() {
     }
 
     public Line(Point[] points) {
+        this.dimensionType = DimensionType.D2;
+        for (Point point : points) {
+            if(!DimensionType.D2.equals(point.getDimensionType())){
+                this.dimensionType = DimensionType.D3;
+            }
+        }
         this.points = points;
     }
+
+    private DimensionType dimensionType;
 
     private Point[] points;
 
@@ -112,10 +122,30 @@ public class Line {
         this.parametricEquation = parametricEquation;
     }
 
+    public DimensionType getDimensionType() {
+        return dimensionType;
+    }
+
+    public void setDimensionType(DimensionType dimensionType) {
+        this.dimensionType = dimensionType;
+    }
+
     @Override
     public String toString() {
         return "Line{" +
                 "parametricEquation=" + parametricEquation +
                 '}';
+    }
+
+    public void draw(Graphics g){
+        if (DimensionType.D2.equals(getDimensionType())){
+            Point[] points = getPoints();
+            g.drawLine((int)points[0].getX().getValue(),
+                    (int)points[0].getY().getValue(),
+                    (int)points[1].getX().getValue(),
+                    (int)points[1].getY().getValue());
+        }else{
+            throw new RuntimeException();
+        }
     }
 }
