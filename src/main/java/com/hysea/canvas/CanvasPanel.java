@@ -1,12 +1,17 @@
 package com.hysea.canvas;
 
-import com.hysea.entity.CoordinateSystem;
+import com.hysea.core.Calculator;
+import com.hysea.core.Fraction;
+import com.hysea.entity.*;
 import com.hysea.entity.Point;
-import com.hysea.entity.Vector;
-import com.hysea.entity.Viewpoint;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.util.Calendar;
 
 public class CanvasPanel extends JPanel {
 
@@ -16,10 +21,84 @@ public class CanvasPanel extends JPanel {
     public CanvasPanel() {
         // 初始化画布，设置视点等
         viewpoint = new Viewpoint();
-        viewpoint.setPoint(new Point(3,3,3));
-        viewpoint.setScale(1);
-        viewpoint.setVector(new Vector(-3,-3,-3));
         coordinateSystem = new CoordinateSystem(0,0,0);
+
+        //MouseMotionAdapter的mouseDragged监听事件才管用
+        MouseMotionAdapter mouseMotionAdapter = new MouseMotionAdapter() {
+
+            Integer lastX = null;
+            Integer lastY = null;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+                int x = e.getX();
+                int y = e.getY();
+
+                //第一下记录位置，不变换
+                if(lastX != null && lastY != null){
+//                System.out.println((x - lastX) + " " + (y - lastY));
+
+                    if((x - lastX) != 0){
+                        Fraction xOfVector = viewpoint.getVector().getX();
+                        Fraction yOfVector = viewpoint.getVector().getY();
+                        Fraction zOfVector = viewpoint.getVector().getZ();
+
+                        Fraction xOfVectorX = viewpoint.getVectorX().getX();
+                        Fraction yOfVectorX = viewpoint.getVectorX().getY();
+                        Fraction zOfVectorX = viewpoint.getVectorX().getZ();
+
+                        Fraction delta = new Fraction(x - lastX).multiply(0.01);
+
+                        // 更新viewpoint的向量
+                        viewpoint.getVector().setX(viewpoint.getVector().getX().add(delta.multiply(xOfVectorX)));
+                        viewpoint.getVector().setY(viewpoint.getVector().getY().add(delta.multiply(yOfVectorX)));
+                        viewpoint.getVector().setZ(viewpoint.getVector().getZ().add(delta.multiply(zOfVectorX)));
+                        viewpoint.getVector().setSize(new Fraction(1));
+
+                        // 更新viewpoint的VectorX
+                        viewpoint.getVectorX().setX(viewpoint.getVectorX().getX().subtract(delta.multiply(xOfVector)));
+                        viewpoint.getVectorX().setY(viewpoint.getVectorX().getY().subtract(delta.multiply(yOfVector)));
+                        viewpoint.getVectorX().setZ(viewpoint.getVectorX().getZ().subtract(delta.multiply(zOfVector)));
+                        viewpoint.getVectorX().setSize(new Fraction(1));
+
+                    }
+
+                    if((y - lastY) != 0){
+                        Fraction xOfVector = viewpoint.getVector().getX();
+                        Fraction yOfVector = viewpoint.getVector().getY();
+                        Fraction zOfVector = viewpoint.getVector().getZ();
+
+                        Fraction xOfVectorY = viewpoint.getVectorY().getX();
+                        Fraction yOfVectorY = viewpoint.getVectorY().getY();
+                        Fraction zOfVectorY = viewpoint.getVectorY().getZ();
+
+                        Fraction delta = new Fraction(y - lastY).multiply(0.01);
+
+                        // 更新viewpoint的向量
+                        viewpoint.getVector().setX(viewpoint.getVector().getX().add(delta.multiply(xOfVectorY)));
+                        viewpoint.getVector().setY(viewpoint.getVector().getY().add(delta.multiply(yOfVectorY)));
+                        viewpoint.getVector().setZ(viewpoint.getVector().getZ().add(delta.multiply(zOfVectorY)));
+                        viewpoint.getVector().setSize(new Fraction(1));
+
+                        // 更新viewpoint的VectorX
+                        viewpoint.getVectorY().setX(viewpoint.getVectorY().getX().subtract(delta.multiply(xOfVector)));
+                        viewpoint.getVectorY().setY(viewpoint.getVectorY().getY().subtract(delta.multiply(yOfVector)));
+                        viewpoint.getVectorY().setZ(viewpoint.getVectorY().getZ().subtract(delta.multiply(zOfVector)));
+                        viewpoint.getVectorY().setSize(new Fraction(1));
+                    }
+                }
+
+                lastX = x;
+                lastY = y;
+
+
+                repaint();
+            }
+
+        };
+
+        this.addMouseMotionListener(mouseMotionAdapter);
 
     }
 
@@ -37,7 +116,6 @@ public class CanvasPanel extends JPanel {
     }
 
     public void drawCoordinateSystem(Graphics g){
-
         // 获取面板的中心点坐标
         int minX = 0,minY = 0;
         int maxX = getWidth();
@@ -45,17 +123,64 @@ public class CanvasPanel extends JPanel {
         int centerX = (maxX + minY) / 2;
         int centerY = (maxY + minY) / 2;
 
-        // 红色画笔
-        g.setColor(Color.RED);
+        Point topX = new Point(coordinateSystem.getX() + coordinateSystem.getLength(), 0, 0);
+        Point topY = new Point(0,coordinateSystem.getY() + coordinateSystem.getLength(), 0);
+        Point topZ = new Point(0,0,coordinateSystem.getZ() + coordinateSystem.getLength());
+        Point topOrigin = new Point(0,0,0);
 
-        //x轴
-        g.drawLine(centerX,centerY,maxX,centerY);
+        //视平面
+        Face faceByNormalVectorAndPoint = Calculator.getFaceByNormalVectorAndPoint(viewpoint.getVector(), viewpoint.getPoint());
 
-        //y轴
-        g.drawLine(centerX,centerY,centerX,minY);
+        //穿过topX与视线向量平行的直线
+        Line lineByVectorAndPointX = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topX);
+        System.out.println(lineByVectorAndPointX);
+        //穿过topY与视线向量平行的直线
+        Line lineByVectorAndPointY = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topY);
+        System.out.println(lineByVectorAndPointY);
+        //穿过topZ与视线向量平行的直线
+        Line lineByVectorAndPointZ = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topZ);
+        System.out.println(lineByVectorAndPointZ);
+        //穿过topO与视线向量平行的直线
+        Line lineByVectorAndPointOrigin = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topOrigin);
+        System.out.println(lineByVectorAndPointOrigin);
 
-        //z轴
-        g.drawLine(centerX,centerY,centerX,centerY);
+        //投影到视平面上的topX
+        Point pointByParametricEquationOfLineAndCommonEquationOfFaceX = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointX, faceByNormalVectorAndPoint);
+        //投影到视平面上的topY
+        Point pointByParametricEquationOfLineAndCommonEquationOfFaceY = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointY, faceByNormalVectorAndPoint);
+        //投影到视平面上的topZ
+        Point pointByParametricEquationOfLineAndCommonEquationOfFaceZ = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointZ, faceByNormalVectorAndPoint);
+        //投影到视平面上的topO
+        Point pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointOrigin, faceByNormalVectorAndPoint);
 
+        //转换成视平面上的直角坐标系坐标
+        Point mapX = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceX, viewpoint.getPoint());
+        Point mapY = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceY, viewpoint.getPoint());
+        Point mapZ = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceZ, viewpoint.getPoint());
+        Point mapOrigin = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin, viewpoint.getPoint());
+
+        //映射到视平面的原点直角坐标系坐标
+        int mapCenterX = centerX + (int)mapOrigin.getX().getValue();
+        int mapCenterY = centerY + (int)mapOrigin.getY().getValue();
+
+        g.setColor(new Color(29,55,56));
+        g.fillRect(0,0,getWidth(),getHeight());
+
+        // 白色画笔
+        g.setColor(Color.WHITE);
+
+        Point originPoint = new Point(mapCenterX, mapCenterY);
+
+        Point topXPoint = new Point(centerX + (int)mapX.getX().getValue(),centerY + (int)mapX.getY().getValue());
+        Line xAxle = new Line(new Point[]{originPoint,topXPoint});
+        xAxle.draw(g);
+
+        Point topYPoint = new Point(centerX + (int)mapY.getX().getValue(),centerY + (int)mapY.getY().getValue());
+        Line yAxle = new Line(new Point[]{originPoint,topYPoint});
+        yAxle.draw(g);
+
+        Point topZPoint = new Point(centerX + (int)mapZ.getX().getValue(),centerY + (int)mapZ.getY().getValue());
+        Line zAxle = new Line(new Point[]{originPoint,topZPoint});
+        zAxle.draw(g);
     }
 }
