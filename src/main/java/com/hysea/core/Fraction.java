@@ -2,6 +2,8 @@ package com.hysea.core;
 
 public class Fraction {
 
+    public static Fraction ZERO = new Fraction(0);
+
     //分子
     private double numerator;
 
