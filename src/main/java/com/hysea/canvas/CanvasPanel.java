@@ -171,8 +171,39 @@ public class CanvasPanel extends JPanel {
 
         Point originPoint = new Point(mapCenterX, mapCenterY);
 
+        Line topLine = new Line(new Point[]{
+                new Point(new Fraction(minX),new Fraction(minY)),
+                new Point(new Fraction(maxX),new Fraction(minY))
+        });
+
+        Line leftLine = new Line(new Point[]{
+                new Point(new Fraction(minX),new Fraction(minY)),
+                new Point(new Fraction(minX),new Fraction(maxY))
+        });
+
+        Line bottomLine = new Line(new Point[]{
+                new Point(new Fraction(minX),new Fraction(maxY)),
+                new Point(new Fraction(maxX),new Fraction(maxY))
+        });
+
+        Line rightLine = new Line(new Point[]{
+                new Point(new Fraction(maxX),new Fraction(minY)),
+                new Point(new Fraction(maxX),new Fraction(maxY))
+        });
+
+
         Point topXPoint = new Point(centerX + (int)mapX.getX().getValue(),centerY + (int)mapX.getY().getValue());
         Line xAxle = new Line(new Point[]{originPoint,topXPoint});
+        Point pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, topLine);
+        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
+            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, leftLine);
+        }
+        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
+            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, bottomLine);
+        }
+        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
+            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, rightLine);
+        }
         xAxle.draw(g);
 
         Point topYPoint = new Point(centerX + (int)mapY.getX().getValue(),centerY + (int)mapY.getY().getValue());

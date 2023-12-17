@@ -206,4 +206,39 @@ public class Calculator {
         return augmentedMatrix;
     }
 
+    /**
+     * 求两条线的交点，要求line1不能延长(x0,y0)一端，求得两条直线的交点
+     * @param line1 根据parametricEquation参数式的延长直线，不能延长(x0,y0)一端
+     * @param line2 根据slopeExpression斜率式的无限长直线
+     * @return 交点
+     */
+    public static Point getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(Line line1, Line line2){
+
+        Fraction x = new Fraction(0);
+        Fraction y = new Fraction(0);
+        //实现逻辑
+        Line.ParametricEquation parametricEquation = line1.getParametricEquation();
+        Line.SlopeExpression slopeExpression = line2.getSlopeExpression();
+
+        //求t
+        //t=(k*x0+b-y0)/(n-k*m)
+        //只要n-k*m != 0就有解
+        if(parametricEquation.getN().subtract(slopeExpression.getK().multiply(parametricEquation.getM())).getValue() != 0){
+            Fraction t = slopeExpression.getK().multiply(parametricEquation.getX0()).add(slopeExpression.getB()).subtract(parametricEquation.getY0())
+                    .divide(parametricEquation.getN().subtract(slopeExpression.getK().multiply(parametricEquation.getM())));
+            //t < 0 说明是延长(x0,y0)一端的交点，不符合函数要求
+            if(t.getValue() < 0){
+                return null;
+            }else {
+                x = t.multiply(parametricEquation.getM()).add(parametricEquation.getX0());
+                y = t.multiply(parametricEquation.getN()).add(parametricEquation.getY0());
+            }
+        }else {
+            //平行
+            return null;
+        }
+
+        return new Point(x,y);
+    }
+
 }
