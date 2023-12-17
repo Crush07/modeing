@@ -17,6 +17,10 @@ public class Line {
             }
         }
         this.points = points;
+        if(DimensionType.D2.equals(getDimensionType())){
+            buildParametricEquationByPoints();
+            buildSlopeExpression();
+        }
     }
 
     private DimensionType dimensionType;
@@ -25,13 +29,42 @@ public class Line {
 
     private ParametricEquation parametricEquation;
 
+    private SlopeExpression slopeExpression;
+
     /**
-     * 直线方程参数式
+     * 2D直线方程斜率式
+     */
+    public static class SlopeExpression{
+
+        private Fraction k;
+
+        private Fraction b;
+
+        public Fraction getK() {
+            return k;
+        }
+
+        public void setK(Fraction k) {
+            this.k = k;
+        }
+
+        public Fraction getB() {
+            return b;
+        }
+
+        public void setB(Fraction b) {
+            this.b = b;
+        }
+    }
+
+    /**
+     * 2D,3D直线方程参数式
      * x = mt + x0
      * y = nt + y0
      * z = pt + z0
      */
     public static class ParametricEquation {
+        private DimensionType dimensionType;
 
         private Fraction m;
 
@@ -93,6 +126,14 @@ public class Line {
             this.z0 = z0;
         }
 
+        public DimensionType getDimensionType() {
+            return dimensionType;
+        }
+
+        public void setDimensionType(DimensionType dimensionType) {
+            this.dimensionType = dimensionType;
+        }
+
         @Override
         public String toString() {
             return "ParametricEquation{" +
@@ -122,6 +163,14 @@ public class Line {
         this.parametricEquation = parametricEquation;
     }
 
+    public SlopeExpression getSlopeExpression() {
+        return slopeExpression;
+    }
+
+    public void setSlopeExpression(SlopeExpression slopeExpression) {
+        this.slopeExpression = slopeExpression;
+    }
+
     public DimensionType getDimensionType() {
         return dimensionType;
     }
@@ -146,6 +195,62 @@ public class Line {
                     (int)points[1].getY().getValue());
         }else{
             throw new RuntimeException();
+        }
+    }
+
+    /**
+     * 通过this.points计算两点式
+     * 如果getDimensionType为2D，则只设置m,n,x0,y0
+     */
+    public void buildParametricEquationByPoints(){
+        if (DimensionType.D2.equals(getDimensionType())) {
+            Point[] points = getPoints();
+
+            Fraction x0 = points[0].getX();
+            Fraction y0 = points[0].getY();
+            Fraction x1 = points[1].getX();
+            Fraction y1 = points[1].getY();
+
+            // Calculate m and x0
+            Fraction m = x1.subtract(x0);
+
+            // Calculate n and y0
+            Fraction n = y0.subtract(y1);
+
+            // Set parametric equation
+            ParametricEquation equation = new ParametricEquation();
+            equation.setM(m);
+            equation.setN(n);
+            equation.setX0(x0);
+            equation.setY0(y0);
+            equation.setDimensionType(DimensionType.D2);
+
+            setParametricEquation(equation);
+        } else {
+            throw new RuntimeException("Unsupported dimension type for this method.");
+        }
+    }
+
+    public void buildSlopeExpression(){
+        if (DimensionType.D2.equals(getDimensionType())) {
+            Point[] points = getPoints();
+
+            Fraction x0 = points[0].getX();
+            Fraction y0 = points[0].getY();
+            Fraction x1 = points[1].getX();
+            Fraction y1 = points[1].getY();
+
+            Fraction k = y1.subtract(y0).divide(x1.subtract(x0));
+
+            Fraction b = y0.subtract(x0.multiply(k));
+
+            SlopeExpression slopeExpression = new SlopeExpression();
+            slopeExpression.setK(k);
+            slopeExpression.setB(b);
+
+            setSlopeExpression(slopeExpression);
+        } else {
+            throw new RuntimeException("Unsupported dimension type for this method.");
         }
     }
 }
