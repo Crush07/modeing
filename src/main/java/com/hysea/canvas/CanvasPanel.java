@@ -194,24 +194,56 @@ public class CanvasPanel extends JPanel {
 
         Point topXPoint = new Point(centerX + (int)mapX.getX().getValue(),centerY + (int)mapX.getY().getValue());
         Line xAxle = new Line(new Point[]{originPoint,topXPoint});
-        Point pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, topLine);
-        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
-            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, leftLine);
+        Point xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, topLine);
+        if(xAxlePoint == null){
+            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, leftLine);
         }
-        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
-            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, bottomLine);
+        if(xAxlePoint == null){
+            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, bottomLine);
         }
-        if(pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 == null){
-            pointByParametricEquationOfLine1AndSlopeExpressionOfLine2 = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, rightLine);
+        if(xAxlePoint == null){
+            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, rightLine);
+        }
+        System.out.println("xAxlePoint"+xAxlePoint);
+        if(xAxlePoint != null){
+            xAxle.getPoints()[1] = xAxlePoint;
         }
         xAxle.draw(g);
 
         Point topYPoint = new Point(centerX + (int)mapY.getX().getValue(),centerY + (int)mapY.getY().getValue());
         Line yAxle = new Line(new Point[]{originPoint,topYPoint});
+        Point yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(yAxle, topLine);
+        if(yAxlePoint == null){
+            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, leftLine);
+        }
+        if(yAxlePoint == null){
+            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, bottomLine);
+        }
+        if(yAxlePoint == null){
+            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, rightLine);
+        }
+        System.out.println("yAxlePoint"+yAxlePoint);
+        if(yAxlePoint != null){
+            yAxle.getPoints()[1] = yAxlePoint;
+        }
         yAxle.draw(g);
 
         Point topZPoint = new Point(centerX + (int)mapZ.getX().getValue(),centerY + (int)mapZ.getY().getValue());
         Line zAxle = new Line(new Point[]{originPoint,topZPoint});
+        Point zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(zAxle, topLine);
+        if(zAxlePoint == null){
+            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, leftLine);
+        }
+        if(zAxlePoint == null){
+            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, bottomLine);
+        }
+        if(zAxlePoint == null){
+            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, rightLine);
+        }
+        System.out.println("zAxlePoint"+zAxlePoint);
+        if(zAxlePoint != null){
+            zAxle.getPoints()[1] = zAxlePoint;
+        }
         zAxle.draw(g);
     }
 }
