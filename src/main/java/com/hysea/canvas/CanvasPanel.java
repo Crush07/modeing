@@ -115,6 +115,38 @@ public class CanvasPanel extends JPanel {
         drawCoordinateSystem(g);
     }
 
+    public void drawLine(Graphics g,Line line){
+        // 获取面板的中心点坐标
+        int minX = 0,minY = 0;
+        int maxX = getWidth();
+        int maxY = getHeight();
+        int centerX = (maxX + minY) / 2;
+        int centerY = (maxY + minY) / 2;
+
+        //视平面
+        Face faceByNormalVectorAndPoint = Calculator.getFaceByNormalVectorAndPoint(viewpoint.getVector(), viewpoint.getPoint());
+
+        //穿过topX与视线向量平行的直线
+        Line lineByVectorAndPoint1 = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), line.getPoints()[0]);
+        //穿过topY与视线向量平行的直线
+        Line lineByVectorAndPoint2 = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), line.getPoints()[1]);
+
+        //投影到视平面上的topX
+        Point pointByParametricEquationOfLineAndCommonEquationOfFace1 = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPoint1, faceByNormalVectorAndPoint);
+        //投影到视平面上的topY
+        Point pointByParametricEquationOfLineAndCommonEquationOfFace2 = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPoint2, faceByNormalVectorAndPoint);
+
+        //转换成视平面上的直角坐标系坐标
+        Point map1 = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFace1, viewpoint.getPoint());
+        Point map2 = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFace2, viewpoint.getPoint());
+
+        Point top1Point = new Point(centerX + (int)map1.getX().getValue(),centerY + (int)map1.getY().getValue());
+        Point top2Point = new Point(centerX + (int)map2.getX().getValue(),centerY + (int)map2.getY().getValue());
+        Line l = new Line(new Point[]{top1Point,top2Point});
+        l.draw(g);
+
+    }
+
     public void drawCoordinateSystem(Graphics g){
         // 获取面板的中心点坐标
         int minX = 0,minY = 0;
@@ -245,5 +277,8 @@ public class CanvasPanel extends JPanel {
             zAxle.getPoints()[1] = zAxlePoint;
         }
         zAxle.draw(g);
+
+        Line line = new Line(new Point[]{new Point(0, 0, 0), new Point(300, 300, 300)});
+        drawLine(g,line);
     }
 }
