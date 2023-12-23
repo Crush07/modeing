@@ -20,6 +20,7 @@ public class Line {
         if(DimensionType.D2.equals(getDimensionType())){
             buildParametricEquationByPoints();
             buildSlopeExpression();
+            buildCommonEquation();
         }
     }
 
@@ -30,6 +31,8 @@ public class Line {
     private ParametricEquation parametricEquation;
 
     private SlopeExpression slopeExpression;
+
+    private CommonEquation commonEquation;
 
     /**
      * 2D直线方程斜率式
@@ -147,6 +150,38 @@ public class Line {
         }
     }
 
+    public static class CommonEquation{
+        private Fraction a;
+
+        private Fraction b;
+
+        private Fraction c;
+
+        public Fraction getA() {
+            return a;
+        }
+
+        public void setA(Fraction a) {
+            this.a = a;
+        }
+
+        public Fraction getB() {
+            return b;
+        }
+
+        public void setB(Fraction b) {
+            this.b = b;
+        }
+
+        public Fraction getC() {
+            return c;
+        }
+
+        public void setC(Fraction c) {
+            this.c = c;
+        }
+    }
+
     public Point[] getPoints() {
         return points;
     }
@@ -161,6 +196,14 @@ public class Line {
 
     public void setParametricEquation(ParametricEquation parametricEquation) {
         this.parametricEquation = parametricEquation;
+    }
+
+    public CommonEquation getCommonEquation() {
+        return commonEquation;
+    }
+
+    public void setCommonEquation(CommonEquation commonEquation) {
+        this.commonEquation = commonEquation;
     }
 
     public SlopeExpression getSlopeExpression() {
@@ -215,7 +258,7 @@ public class Line {
             Fraction m = x1.subtract(x0);
 
             // Calculate n and y0
-            Fraction n = y0.subtract(y1);
+            Fraction n = y1.subtract(y0);
 
             // Set parametric equation
             ParametricEquation equation = new ParametricEquation();
@@ -251,6 +294,27 @@ public class Line {
             setSlopeExpression(slopeExpression);
         } else {
             throw new RuntimeException("Unsupported dimension type for this method.");
+        }
+    }
+
+    /**
+     * A = Y2 - Y1
+     * B = X1 - X2
+     * C = X2*Y1 - X1*Y2
+     */
+    public void buildCommonEquation(){
+        if (DimensionType.D2.equals(getDimensionType())) {
+            CommonEquation commonEquation = new CommonEquation();
+
+            Fraction a = points[1].getY().subtract(points[0].getY());
+            Fraction b = points[0].getX().subtract(points[1].getX());
+            Fraction c = points[1].getX().multiply(points[0].getY()).subtract(points[0].getX().multiply(points[1].getY()));
+
+            commonEquation.setA(a);
+            commonEquation.setB(b);
+            commonEquation.setC(c);
+
+            setCommonEquation(commonEquation);
         }
     }
 }
