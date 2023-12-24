@@ -4,6 +4,7 @@ import com.hysea.canvas.CanvasPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 public class DrawingApp {
     public static void main(String[] args) {
@@ -16,6 +17,8 @@ public class DrawingApp {
             JToolBar toolBar = new JToolBar();
             JButton tool1 = new JButton("Tool 1");
             JButton tool2 = new JButton("Tool 2");
+
+//            MouseAdapter mouseAdapter = new MouseAdapter();
 
             toolBar.add(tool1);
             toolBar.add(tool2);

@@ -148,137 +148,172 @@ public class CanvasPanel extends JPanel {
     }
 
     public void drawCoordinateSystem(Graphics g){
-        // 获取面板的中心点坐标
-        int minX = 0,minY = 0;
-        int maxX = getWidth();
-        int maxY = getHeight();
-        int centerX = (maxX + minY) / 2;
-        int centerY = (maxY + minY) / 2;
-
-        Point topX = new Point(coordinateSystem.getX() + coordinateSystem.getLength(), 0, 0);
-        Point topY = new Point(0,coordinateSystem.getY() + coordinateSystem.getLength(), 0);
-        Point topZ = new Point(0,0,coordinateSystem.getZ() + coordinateSystem.getLength());
-        Point topOrigin = new Point(0,0,0);
-
-        //视平面
-        Face faceByNormalVectorAndPoint = Calculator.getFaceByNormalVectorAndPoint(viewpoint.getVector(), viewpoint.getPoint());
-
-        //穿过topX与视线向量平行的直线
-        Line lineByVectorAndPointX = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topX);
-        System.out.println(lineByVectorAndPointX);
-        //穿过topY与视线向量平行的直线
-        Line lineByVectorAndPointY = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topY);
-        System.out.println(lineByVectorAndPointY);
-        //穿过topZ与视线向量平行的直线
-        Line lineByVectorAndPointZ = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topZ);
-        System.out.println(lineByVectorAndPointZ);
-        //穿过topO与视线向量平行的直线
-        Line lineByVectorAndPointOrigin = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topOrigin);
-        System.out.println(lineByVectorAndPointOrigin);
-
-        //投影到视平面上的topX
-        Point pointByParametricEquationOfLineAndCommonEquationOfFaceX = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointX, faceByNormalVectorAndPoint);
-        //投影到视平面上的topY
-        Point pointByParametricEquationOfLineAndCommonEquationOfFaceY = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointY, faceByNormalVectorAndPoint);
-        //投影到视平面上的topZ
-        Point pointByParametricEquationOfLineAndCommonEquationOfFaceZ = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointZ, faceByNormalVectorAndPoint);
-        //投影到视平面上的topO
-        Point pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointOrigin, faceByNormalVectorAndPoint);
-
-        //转换成视平面上的直角坐标系坐标
-        Point mapX = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceX, viewpoint.getPoint());
-        Point mapY = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceY, viewpoint.getPoint());
-        Point mapZ = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceZ, viewpoint.getPoint());
-        Point mapOrigin = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin, viewpoint.getPoint());
-
-        //映射到视平面的原点直角坐标系坐标
-        int mapCenterX = centerX + (int)mapOrigin.getX().getValue();
-        int mapCenterY = centerY + (int)mapOrigin.getY().getValue();
+//        // 获取面板的中心点坐标
+//        int minX = 0,minY = 0;
+//        int maxX = getWidth();
+//        int maxY = getHeight();
+//        int centerX = (maxX + minY) / 2;
+//        int centerY = (maxY + minY) / 2;
+//
+//        Point topX = new Point(coordinateSystem.getX() + coordinateSystem.getLength(), 0, 0);
+//        Point topY = new Point(0,coordinateSystem.getY() + coordinateSystem.getLength(), 0);
+//        Point topZ = new Point(0,0,coordinateSystem.getZ() + coordinateSystem.getLength());
+//        Point topOrigin = new Point(0,0,0);
+//
+//        //视平面
+//        Face faceByNormalVectorAndPoint = Calculator.getFaceByNormalVectorAndPoint(viewpoint.getVector(), viewpoint.getPoint());
+//
+//        //穿过topX与视线向量平行的直线
+//        Line lineByVectorAndPointX = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topX);
+//        System.out.println(lineByVectorAndPointX);
+//        //穿过topY与视线向量平行的直线
+//        Line lineByVectorAndPointY = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topY);
+//        System.out.println(lineByVectorAndPointY);
+//        //穿过topZ与视线向量平行的直线
+//        Line lineByVectorAndPointZ = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topZ);
+//        System.out.println(lineByVectorAndPointZ);
+//        //穿过topO与视线向量平行的直线
+//        Line lineByVectorAndPointOrigin = Calculator.getLineByVectorAndPoint(viewpoint.getVector(), topOrigin);
+//        System.out.println(lineByVectorAndPointOrigin);
+//
+//        //投影到视平面上的topX
+//        Point pointByParametricEquationOfLineAndCommonEquationOfFaceX = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointX, faceByNormalVectorAndPoint);
+//        //投影到视平面上的topY
+//        Point pointByParametricEquationOfLineAndCommonEquationOfFaceY = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointY, faceByNormalVectorAndPoint);
+//        //投影到视平面上的topZ
+//        Point pointByParametricEquationOfLineAndCommonEquationOfFaceZ = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointZ, faceByNormalVectorAndPoint);
+//        //投影到视平面上的topO
+//        Point pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin = Calculator.getPointByParametricEquationOfLineAndCommonEquationOfFace(lineByVectorAndPointOrigin, faceByNormalVectorAndPoint);
+//
+//        //转换成视平面上的直角坐标系坐标
+//        Point mapX = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceX, viewpoint.getPoint());
+//        Point mapY = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceY, viewpoint.getPoint());
+//        Point mapZ = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceZ, viewpoint.getPoint());
+//        Point mapOrigin = Calculator.getPointInRectangularCoordinateSystemByVectorXAndVectorYAndPointToOriginPoint(viewpoint.getVectorX(), viewpoint.getVectorY(), pointByParametricEquationOfLineAndCommonEquationOfFaceOrigin, viewpoint.getPoint());
+//
+//        //映射到视平面的原点直角坐标系坐标
+//        int mapCenterX = centerX + (int)mapOrigin.getX().getValue();
+//        int mapCenterY = centerY + (int)mapOrigin.getY().getValue();
 
         g.setColor(new Color(29,55,56));
         g.fillRect(0,0,getWidth(),getHeight());
 
         // 白色画笔
         g.setColor(Color.WHITE);
+//
+//        Point originPoint = new Point(mapCenterX, mapCenterY);
+//
+//        Line topLine = new Line(new Point[]{
+//                new Point(new Fraction(minX),new Fraction(minY)),
+//                new Point(new Fraction(maxX),new Fraction(minY))
+//        });
+//
+//        Line leftLine = new Line(new Point[]{
+//                new Point(new Fraction(minX),new Fraction(minY)),
+//                new Point(new Fraction(minX),new Fraction(maxY))
+//        });
+//
+//        Line bottomLine = new Line(new Point[]{
+//                new Point(new Fraction(minX),new Fraction(maxY)),
+//                new Point(new Fraction(maxX),new Fraction(maxY))
+//        });
+//
+//        Line rightLine = new Line(new Point[]{
+//                new Point(new Fraction(maxX),new Fraction(minY)),
+//                new Point(new Fraction(maxX),new Fraction(maxY))
+//        });
+//
+//
+//        Point topXPoint = new Point(centerX + (int)mapX.getX().getValue(),centerY + (int)mapX.getY().getValue());
+//        Line xAxle = new Line(new Point[]{originPoint,topXPoint});
+//        Point xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, topLine);
+//        if(xAxlePoint == null){
+//            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, leftLine);
+//        }
+//        if(xAxlePoint == null){
+//            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, bottomLine);
+//        }
+//        if(xAxlePoint == null){
+//            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, rightLine);
+//        }
+//        System.out.println("xAxlePoint"+xAxlePoint);
+//        if(xAxlePoint != null){
+//            xAxle.getPoints()[1] = xAxlePoint;
+//        }
+//        xAxle.draw(g);
+//
+//        Point topYPoint = new Point(centerX + (int)mapY.getX().getValue(),centerY + (int)mapY.getY().getValue());
+//        Line yAxle = new Line(new Point[]{originPoint,topYPoint});
+//        Point yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(yAxle, topLine);
+//        if(yAxlePoint == null){
+//            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, leftLine);
+//        }
+//        if(yAxlePoint == null){
+//            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, bottomLine);
+//        }
+//        if(yAxlePoint == null){
+//            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, rightLine);
+//        }
+//        System.out.println("yAxlePoint"+yAxlePoint);
+//        if(yAxlePoint != null){
+//            yAxle.getPoints()[1] = yAxlePoint;
+//        }
+//        yAxle.draw(g);
+//
+//        Point topZPoint = new Point(centerX + (int)mapZ.getX().getValue(),centerY + (int)mapZ.getY().getValue());
+//        Line zAxle = new Line(new Point[]{originPoint,topZPoint});
+//        Point zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(zAxle, topLine);
+//        if(zAxlePoint == null){
+//            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, leftLine);
+//        }
+//        if(zAxlePoint == null){
+//            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, bottomLine);
+//        }
+//        if(zAxlePoint == null){
+//            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, rightLine);
+//        }
+//        System.out.println("zAxlePoint"+zAxlePoint);
+//        if(zAxlePoint != null){
+//            zAxle.getPoints()[1] = zAxlePoint;
+//        }
+//        zAxle.draw(g);
+        Line[] lineArray = {
+                new Line(new Point[]{new Point(-50, -50, -50), new Point(50, -50, -50)}),
+                new Line(new Point[]{new Point(50, -50, -50), new Point(50, 50, -50)}),
+                new Line(new Point[]{new Point(50, 50, -50), new Point(-50, 50, -50)}),
+                new Line(new Point[]{new Point(-50, 50, -50), new Point(-50, -50, -50)}),
 
-        Point originPoint = new Point(mapCenterX, mapCenterY);
+                new Line(new Point[]{new Point(-50, -50, 50), new Point(50, -50, 50)}),
+                new Line(new Point[]{new Point(50, -50, 50), new Point(50, 50, 50)}),
+                new Line(new Point[]{new Point(50, 50, 50), new Point(-50, 50, 50)}),
+                new Line(new Point[]{new Point(-50, 50, 50), new Point(-50, -50, 50)}),
 
-        Line topLine = new Line(new Point[]{
-                new Point(new Fraction(minX),new Fraction(minY)),
-                new Point(new Fraction(maxX),new Fraction(minY))
-        });
+                new Line(new Point[]{new Point(-50, -50, -50), new Point(-50, -50, 50)}),
+                new Line(new Point[]{new Point(50, -50, -50), new Point(50, -50, 50)}),
+                new Line(new Point[]{new Point(50, 50, -50), new Point(50, 50, 50)}),
+                new Line(new Point[]{new Point(-50, 50, -50), new Point(-50, 50, 50)})
+        };
 
-        Line leftLine = new Line(new Point[]{
-                new Point(new Fraction(minX),new Fraction(minY)),
-                new Point(new Fraction(minX),new Fraction(maxY))
-        });
+//        for (int i = 0; i < 12; i++) {
+//            double theta1 = 2.0 * Math.PI * i / 12;
+//            double theta2 = 2.0 * Math.PI * (i + 1) / 12;
+//
+//            // 计算细分线的起点和终点
+//            Point p1 = new Point(0 + radius * Math.cos(theta1), 0 + radius * Math.sin(theta1), center.getZ());
+//            Point p2 = new Point(0 + radius * Math.cos(theta2), 0 + radius * Math.sin(theta2), center.getZ());
+//
+//            Line line = new Line(new Point[]{p1, p2});
+//
+//            // 输出代码
+//            System.out.println("Line line = new Line(new Point[]{" +
+//                    "new Point(" + line.getP1().getX() + ", " + line.getP1().getY() + ", " + line.getP1().getZ() + "), " +
+//                    "new Point(" + line.getP2().getX() + ", " + line.getP2().getY() + ", " + line.getP2().getZ() + ")" +
+//                    "});");
+//        }
 
-        Line bottomLine = new Line(new Point[]{
-                new Point(new Fraction(minX),new Fraction(maxY)),
-                new Point(new Fraction(maxX),new Fraction(maxY))
-        });
 
-        Line rightLine = new Line(new Point[]{
-                new Point(new Fraction(maxX),new Fraction(minY)),
-                new Point(new Fraction(maxX),new Fraction(maxY))
-        });
-
-
-        Point topXPoint = new Point(centerX + (int)mapX.getX().getValue(),centerY + (int)mapX.getY().getValue());
-        Line xAxle = new Line(new Point[]{originPoint,topXPoint});
-        Point xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(xAxle, topLine);
-        if(xAxlePoint == null){
-            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, leftLine);
+        for (Line line : lineArray) {
+            drawLine(g,line);
         }
-        if(xAxlePoint == null){
-            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, bottomLine);
-        }
-        if(xAxlePoint == null){
-            xAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(xAxle, rightLine);
-        }
-        System.out.println("xAxlePoint"+xAxlePoint);
-        if(xAxlePoint != null){
-            xAxle.getPoints()[1] = xAxlePoint;
-        }
-        xAxle.draw(g);
-
-        Point topYPoint = new Point(centerX + (int)mapY.getX().getValue(),centerY + (int)mapY.getY().getValue());
-        Line yAxle = new Line(new Point[]{originPoint,topYPoint});
-        Point yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(yAxle, topLine);
-        if(yAxlePoint == null){
-            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, leftLine);
-        }
-        if(yAxlePoint == null){
-            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, bottomLine);
-        }
-        if(yAxlePoint == null){
-            yAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(yAxle, rightLine);
-        }
-        System.out.println("yAxlePoint"+yAxlePoint);
-        if(yAxlePoint != null){
-            yAxle.getPoints()[1] = yAxlePoint;
-        }
-        yAxle.draw(g);
-
-        Point topZPoint = new Point(centerX + (int)mapZ.getX().getValue(),centerY + (int)mapZ.getY().getValue());
-        Line zAxle = new Line(new Point[]{originPoint,topZPoint});
-        Point zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndSlopeExpressionOfLine2(zAxle, topLine);
-        if(zAxlePoint == null){
-            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, leftLine);
-        }
-        if(zAxlePoint == null){
-            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, bottomLine);
-        }
-        if(zAxlePoint == null){
-            zAxlePoint = Calculator.getPointByParametricEquationOfLine1AndCommonEquationOfLine2(zAxle, rightLine);
-        }
-        System.out.println("zAxlePoint"+zAxlePoint);
-        if(zAxlePoint != null){
-            zAxle.getPoints()[1] = zAxlePoint;
-        }
-        zAxle.draw(g);
-
-        Line line = new Line(new Point[]{new Point(0, 0, 0), new Point(300, 300, 300)});
-        drawLine(g,line);
     }
 }
