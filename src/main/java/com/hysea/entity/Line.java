@@ -3,8 +3,9 @@ package com.hysea.entity;
 import com.hysea.core.Fraction;
 
 import java.awt.*;
+import java.util.Arrays;
 
-public class Line {
+public class Line extends CanBeSelectedObject{
 
     public Line() {
     }
@@ -225,7 +226,12 @@ public class Line {
     @Override
     public String toString() {
         return "Line{" +
-                "parametricEquation=" + parametricEquation +
+                "dimensionType=" + dimensionType +
+                ", points=" + Arrays.toString(points) +
+                ", parametricEquation=" + parametricEquation +
+                ", slopeExpression=" + slopeExpression +
+                ", commonEquation=" + commonEquation +
+                ", isBeSelected=" + isBeSelected +
                 '}';
     }
 
