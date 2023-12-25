@@ -276,4 +276,22 @@ public class Calculator {
         return new Point(x,y);
     }
 
+    public static boolean isPoint2DInLine2D(Point point, Line line){
+        Line.ParametricEquation parametricEquation = line.getParametricEquation();
+
+        Fraction t = point.getX().subtract(parametricEquation.getX0()).divide(parametricEquation.getM());
+
+//        System.out.println(t);
+
+        //如果点在线段内则一定符合t >= 0 && t <= 1
+        if(t.getValue() >= 0 && t.getValue() <= 1){
+            //代入y = y0 + nt，验证等式，如果等式成立，则点在线段内
+            if(t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() >= point.getY().getValue() - 10
+                && t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() <= point.getY().getValue() + 10){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
