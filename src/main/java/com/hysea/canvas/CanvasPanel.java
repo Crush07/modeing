@@ -115,7 +115,7 @@ public class CanvasPanel extends JPanel {
         drawCoordinateSystem(g);
     }
 
-    public void drawLine(Graphics g,Line line){
+    public void drawLine(Graphics2D g,Line line){
         // 获取面板的中心点坐标
         int minX = 0,minY = 0;
         int maxX = getWidth();
@@ -200,6 +200,12 @@ public class CanvasPanel extends JPanel {
 
         // 白色画笔
         g.setColor(Color.WHITE);
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        // 启用抗锯齿
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 //
 //        Point originPoint = new Point(mapCenterX, mapCenterY);
 //
@@ -294,14 +300,14 @@ public class CanvasPanel extends JPanel {
 //                new Line(new Point[]{new Point(-50, 50, -50), new Point(-50, 50, 50)})
 //        };
 
-        Line[] lineArray = new Line[36];
+        Line[] lineArray = new Line[120];
 
         double radius = 100;
 
         Point center = new Point(0, 0, 0);
-        for (int i = 0; i < 12; i++) {
-            double theta1 = 2.0 * Math.PI * i / 12;
-            double theta2 = 2.0 * Math.PI * (i + 1) / 12;
+        for (int i = 0; i < 24; i++) {
+            double theta1 = 2.0 * Math.PI * i / 24;
+            double theta2 = 2.0 * Math.PI * (i + 1) / 24;
 
             // 计算细分线的起点和终点
             Point p1 = new Point(center.getX().add(radius * Math.cos(theta1)), center.getY().add(radius * Math.sin(theta1)), center.getZ());
@@ -310,12 +316,16 @@ public class CanvasPanel extends JPanel {
             Line line = new Line(new Point[]{p1, p2});
 
             lineArray[i] = line;
+
+            Line line1 = new Line(new Point[]{center, p1});
+
+            lineArray[i + 24] = line1;
         }
 
         center = new Point(0, 0, 200);
-        for (int i = 0; i < 12; i++) {
-            double theta1 = 2.0 * Math.PI * i / 12;
-            double theta2 = 2.0 * Math.PI * (i + 1) / 12;
+        for (int i = 0; i < 24; i++) {
+            double theta1 = 2.0 * Math.PI * i / 24;
+            double theta2 = 2.0 * Math.PI * (i + 1) / 24;
 
             // 计算细分线的起点和终点
             Point p1 = new Point(center.getX().add(radius * Math.cos(theta1)), center.getY().add(radius * Math.sin(theta1)), center.getZ());
@@ -323,18 +333,21 @@ public class CanvasPanel extends JPanel {
 
             Line line = new Line(new Point[]{p1, p2});
 
-            lineArray[i + 12] = line;
+            lineArray[i + 48] = line;
 
+            Line line1 = new Line(new Point[]{center, p1});
 
-            Line line1 = new Line(new Point[]{p1, lineArray[i].getPoints()[0]});
+            lineArray[i + 72] = line1;
 
-            lineArray[i + 24] = line1;
+            Line line2 = new Line(new Point[]{p1, lineArray[i].getPoints()[0]});
+
+            lineArray[i + 96] = line2;
         }
 
 
 
         for (Line line : lineArray) {
-            drawLine(g,line);
+            drawLine(g2d,line);
         }
     }
 }
