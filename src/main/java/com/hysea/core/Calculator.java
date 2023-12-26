@@ -279,15 +279,21 @@ public class Calculator {
     public static boolean isPoint2DInLine2D(Point point, Line line){
         Line.ParametricEquation parametricEquation = line.getParametricEquation();
 
-        Fraction t = point.getX().subtract(parametricEquation.getX0()).divide(parametricEquation.getM());
+        if(parametricEquation.getM().getValue() != 0){
+            Fraction t = point.getX().subtract(parametricEquation.getX0()).divide(parametricEquation.getM());
 
-//        System.out.println(t);
-
-        //如果点在线段内则一定符合t >= 0 && t <= 1
-        if(t.getValue() >= 0 && t.getValue() <= 1){
-            //代入y = y0 + nt，验证等式，如果等式成立，则点在线段内
-            if(t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() >= point.getY().getValue() - 10
-                && t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() <= point.getY().getValue() + 10){
+            //如果点在线段内则一定符合t >= 0 && t <= 1
+            if(t.getValue() >= 0 && t.getValue() <= 1){
+                //代入y = y0 + nt，验证等式，如果等式成立，则点在线段内
+                if(t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() >= point.getY().getValue() - 1
+                        && t.multiply(parametricEquation.getN()).add(parametricEquation.getY0()).getValue() <= point.getY().getValue() + 1){
+                    return true;
+                }
+            }
+        }else{
+            if(point.getX().getValue() == line.getPoints()[0].getX().getValue()
+                && point.getY().getValue() >= Math.min(line.getPoints()[0].getY().getValue(),line.getPoints()[1].getY().getValue())
+                    && point.getY().getValue() <= Math.max(line.getPoints()[0].getY().getValue(),line.getPoints()[1].getY().getValue())){
                 return true;
             }
         }
