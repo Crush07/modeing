@@ -4,21 +4,23 @@ import com.hysea.core.Calculator;
 import com.hysea.core.Fraction;
 import com.hysea.entity.*;
 import com.hysea.entity.Point;
+import com.hysea.entity.shape.Cylinder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.util.Calendar;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class CanvasPanel extends JPanel {
 
     private Viewpoint viewpoint;
     private CoordinateSystem coordinateSystem;
 
-    Line[] lineArray = new Line[120];
+    List<Line> lineArray = new ArrayList<>();
 
     public CanvasPanel() {
         // 初始化画布，设置视点等
@@ -26,6 +28,7 @@ public class CanvasPanel extends JPanel {
         coordinateSystem = new CoordinateSystem(0,0,0);
 
         drawCoordinateSystem();
+        drawEntity();
 
         //MouseMotionAdapter的mouseDragged监听事件才管用
         MouseMotionAdapter mouseMotionAdapter = new MouseMotionAdapter() {
@@ -217,51 +220,23 @@ public class CanvasPanel extends JPanel {
 
     public void drawCoordinateSystem(){
 
+    }
+
+    public void drawEntity(){
         double radius = 100;
+        double height = 200;
+        Point center = new Point(0,0,100);
+        int subdivision = 12;
+        Line[] tempLineArray = createCylinder(radius, height, center, subdivision);
+        this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
+    }
 
-        Point center = new Point(0, 0, 0);
-        for (int i = 0; i < 24; i++) {
-            double theta1 = 2.0 * Math.PI * i / 24;
-            double theta2 = 2.0 * Math.PI * (i + 1) / 24;
-
-            // 计算细分线的起点和终点
-            Point p1 = new Point(center.getX().add(radius * Math.cos(theta1)), center.getY().add(radius * Math.sin(theta1)), center.getZ());
-            Point p2 = new Point(center.getX().add(radius * Math.cos(theta2)), center.getY().add(radius * Math.sin(theta2)), center.getZ());
-
-            Line line = new Line(new Point[]{p1, p2});
-
-            lineArray[i] = line;
-
-            Line line1 = new Line(new Point[]{center, p1});
-
-            lineArray[i + 24] = line1;
-        }
-
-        center = new Point(0, 0, 200);
-        for (int i = 0; i < 24; i++) {
-            double theta1 = 2.0 * Math.PI * i / 24;
-            double theta2 = 2.0 * Math.PI * (i + 1) / 24;
-
-            // 计算细分线的起点和终点
-            Point p1 = new Point(center.getX().add(radius * Math.cos(theta1)), center.getY().add(radius * Math.sin(theta1)), center.getZ());
-            Point p2 = new Point(center.getX().add(radius * Math.cos(theta2)), center.getY().add(radius * Math.sin(theta2)), center.getZ());
-
-            Line line = new Line(new Point[]{p1, p2});
-
-            lineArray[i + 48] = line;
-
-            Line line1 = new Line(new Point[]{center, p1});
-
-            lineArray[i + 72] = line1;
-
-            Line line2 = new Line(new Point[]{p1, lineArray[i].getPoints()[0]});
-
-            lineArray[i + 96] = line2;
-        }
+    private Line[] createCylinder(double radius, double height, Point center, int subdivision) {
+        return new Cylinder(radius, height, center, subdivision).create().getLines();
     }
 
 
-    public void selectLine(Point mousePoint, Line[] lineArray){
+    public void selectLine(Point mousePoint, List<Line> lineArray){
         for (Line line : lineArray) {
             if(isSelected(mousePoint,line)){
                 line.setBeSelected(true);
