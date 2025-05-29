@@ -305,9 +305,9 @@ public class Calculator {
                 && point.getY().getValue() <= Math.max(line.getPoints()[0].getY().getValue(),line.getPoints()[1].getY().getValue())
                 && point.getX().getValue() >= Math.min(line.getPoints()[0].getX().getValue(),line.getPoints()[1].getX().getValue())
                 && point.getX().getValue() <= Math.max(line.getPoints()[0].getX().getValue(),line.getPoints()[1].getX().getValue())
-                && point.getX().subtract(line.getPoints()[0].getX()).multiply(line.getPoints()[1].getY().subtract(line.getPoints()[0].getY())).getValue()
-                == point.getY().subtract(line.getPoints()[0].getY()).multiply(line.getPoints()[1].getX().subtract(line.getPoints()[0].getX())).getValue()
-        ){
+                && Math.abs(point.getX().subtract(line.getPoints()[0].getX()).multiply(line.getPoints()[1].getY().subtract(line.getPoints()[0].getY()))
+                                .subtract(point.getY().subtract(line.getPoints()[0].getY()).multiply(line.getPoints()[1].getX().subtract(line.getPoints()[0].getX())).getValue())
+                                .getValue()) <= 500){
             return true;
         }else{
             return false;
