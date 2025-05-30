@@ -4,6 +4,7 @@ import com.hysea.core.Calculator;
 import com.hysea.core.Fraction;
 import com.hysea.entity.*;
 import com.hysea.entity.Point;
+import com.hysea.entity.shape.Cube;
 import com.hysea.entity.shape.Cylinder;
 
 import javax.swing.*;
@@ -223,16 +224,27 @@ public class CanvasPanel extends JPanel {
     }
 
     public void drawEntity(){
-        double radius = 100;
+//        double radius = 100;
+//        double height = 200;
+//        Point center = new Point(0,0,100);
+//        int subdivision = 4;
+//        Line[] tempLineArray = createCylinder(radius, height, center, subdivision);
+//        this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
+
+        double length = 100;
+        double width = 100;
         double height = 200;
         Point center = new Point(0,0,100);
-        int subdivision = 12;
-        Line[] tempLineArray = createCylinder(radius, height, center, subdivision);
+        Line[] tempLineArray = createCube(length, width, height, center);
         this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
     }
 
     private Line[] createCylinder(double radius, double height, Point center, int subdivision) {
         return new Cylinder(radius, height, center, subdivision).create().getLines();
+    }
+
+    private Line[] createCube(double length, double width, double height, Point center) {
+        return new Cube(length, width, height, center).create().getLines();
     }
 
 
