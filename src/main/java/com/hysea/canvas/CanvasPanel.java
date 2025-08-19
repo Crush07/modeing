@@ -6,6 +6,7 @@ import com.hysea.entity.*;
 import com.hysea.entity.Point;
 import com.hysea.entity.shape.Cube;
 import com.hysea.entity.shape.Cylinder;
+import com.hysea.entity.shape.Sphere;
 
 import javax.swing.*;
 import java.awt.*;
@@ -130,19 +131,24 @@ public class CanvasPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(new Color(29,55,56));
-        g.fillRect(0,0,getWidth(),getHeight());
-
-        // 白色画笔
-        g.setColor(Color.BLACK);
-
         Graphics2D g2d = (Graphics2D) g;
-
-        // 启用抗锯齿
+        
+        // 启用抗锯齿和高质量渲染
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        
+        // 绘制渐变背景
+        drawGradientBackground(g2d);
+        
+        // 绘制网格
+        drawGrid(g2d);
+        
+        // 绘制坐标轴
+        // drawCoordinateAxes(g2d);
 
+        // 绘制3D线条
         for (Line line : lineArray) {
-            System.out.println(line);
             drawLine(g2d,line);
         }
     }
@@ -231,12 +237,12 @@ public class CanvasPanel extends JPanel {
 //        Line[] tempLineArray = createCylinder(radius, height, center, subdivision);
 //        this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
 
-        double length = 100;
-        double width = 100;
-        double height = 200;
-        Point center = new Point(0,0,100);
-        Line[] tempLineArray = createCube(length, width, height, center);
-        this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
+//        double length = 100;
+//        double width = 100;
+//        double height = 200;
+//        Point center = new Point(0,0,100);
+//        Line[] tempLineArray = createCube(length, width, height, center);
+//        this.lineArray.addAll(Arrays.stream(tempLineArray).collect(Collectors.toList()));
     }
 
     private Line[] createCylinder(double radius, double height, Point center, int subdivision) {
@@ -245,6 +251,28 @@ public class CanvasPanel extends JPanel {
 
     private Line[] createCube(double length, double width, double height, Point center) {
         return new Cube(length, width, height, center).create().getLines();
+    }
+    
+    private Line[] createSphere(double radius, Point center, int subdivision) {
+        return new Sphere(radius, center, subdivision).create().getLines();
+    }
+    
+    public void addSphere(double radius, Point center, int subdivision) {
+        Line[] sphereLines = createSphere(radius, center, subdivision);
+        this.lineArray.addAll(Arrays.stream(sphereLines).filter(line -> line != null).collect(Collectors.toList()));
+        repaint();
+    }
+    
+    public void addCube(double length, double width, double height, Point center) {
+        Line[] cubeLines = createCube(length, width, height, center);
+        this.lineArray.addAll(Arrays.stream(cubeLines).filter(line -> line != null).collect(Collectors.toList()));
+        repaint();
+    }
+    
+    public void addCylinder(double radius, double height, Point center, int subdivision) {
+        Line[] cylinderLines = createCylinder(radius, height, center, subdivision);
+        this.lineArray.addAll(Arrays.stream(cylinderLines).filter(line -> line != null).collect(Collectors.toList()));
+        repaint();
     }
 
 
@@ -260,5 +288,97 @@ public class CanvasPanel extends JPanel {
 
     public void drawFutureLine(Graphics g){
 
+    }
+    
+    /**
+     * 绘制渐变背景
+     */
+    private void drawGradientBackground(Graphics2D g2d) {
+        int width = getWidth();
+        int height = getHeight();
+        
+        // 创建从上到下的渐变
+        GradientPaint gradient = new GradientPaint(
+            0, 0, new Color(45, 45, 48),
+            0, height, new Color(30, 30, 32)
+        );
+        
+        g2d.setPaint(gradient);
+        g2d.fillRect(0, 0, width, height);
+    }
+    
+    /**
+     * 绘制网格
+     */
+    private void drawGrid(Graphics2D g2d) {
+        int width = getWidth();
+        int height = getHeight();
+        int centerX = width / 2;
+        int centerY = height / 2;
+        
+        // 设置网格线样式
+        g2d.setStroke(new BasicStroke(0.5f));
+        g2d.setColor(new Color(80, 80, 85, 100)); // 半透明网格线
+        
+        int gridSize = 20; // 网格大小
+        
+        // 绘制垂直网格线
+        for (int x = centerX % gridSize; x < width; x += gridSize) {
+            g2d.drawLine(x, 0, x, height);
+        }
+        
+        // 绘制水平网格线
+        for (int y = centerY % gridSize; y < height; y += gridSize) {
+            g2d.drawLine(0, y, width, y);
+        }
+    }
+    
+    /**
+     * 绘制坐标轴
+     */
+    private void drawCoordinateAxes(Graphics2D g2d) {
+        int width = getWidth();
+        int height = getHeight();
+        int centerX = width / 2;
+        int centerY = height / 2;
+        
+        // 设置坐标轴样式
+        g2d.setStroke(new BasicStroke(2.0f));
+        
+        // X轴 (红色)
+        g2d.setColor(new Color(255, 100, 100));
+        g2d.drawLine(centerX - 100, centerY, centerX + 100, centerY);
+        // X轴箭头
+        g2d.drawLine(centerX + 95, centerY - 5, centerX + 100, centerY);
+        g2d.drawLine(centerX + 95, centerY + 5, centerX + 100, centerY);
+        // X轴标签
+        g2d.setFont(new Font("Arial", Font.BOLD, 12));
+        g2d.drawString("X", centerX + 105, centerY + 5);
+        
+        // Y轴 (绿色)
+        g2d.setColor(new Color(100, 255, 100));
+        g2d.drawLine(centerX, centerY - 100, centerX, centerY + 100);
+        // Y轴箭头
+        g2d.drawLine(centerX - 5, centerY - 95, centerX, centerY - 100);
+        g2d.drawLine(centerX + 5, centerY - 95, centerX, centerY - 100);
+        // Y轴标签
+        g2d.drawString("Y", centerX + 5, centerY - 105);
+        
+        // Z轴 (蓝色) - 斜向表示深度
+        g2d.setColor(new Color(100, 100, 255));
+        int zEndX = centerX - 70;
+        int zEndY = centerY + 70;
+        g2d.drawLine(centerX, centerY, zEndX, zEndY);
+        // Z轴箭头
+        g2d.drawLine(zEndX + 5, zEndY - 5, zEndX, zEndY);
+        g2d.drawLine(zEndX + 5, zEndY, zEndX, zEndY);
+        // Z轴标签
+        g2d.drawString("Z", zEndX - 10, zEndY + 15);
+        
+        // 绘制原点
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(centerX - 3, centerY - 3, 6, 6);
+        g2d.setColor(new Color(60, 63, 65));
+        g2d.drawOval(centerX - 3, centerY - 3, 6, 6);
     }
 }
