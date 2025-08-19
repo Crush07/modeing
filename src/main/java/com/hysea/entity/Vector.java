@@ -69,7 +69,6 @@ public class Vector {
     }
 
     public void setSize(Fraction size){
-        System.out.println(getSize());
         Fraction scale = size.divide(getSize());
         this.setX(this.getX().multiply(scale));
         this.setY(this.getY().multiply(scale));
